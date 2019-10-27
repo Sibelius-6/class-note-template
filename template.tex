@@ -1,0 +1,384 @@
+\RequirePackage{filecontents}
+\begin{filecontents*}{\jobname.mst}
+	delim_0 "\\IndexDotfill "
+	delim_1 "\\IndexDotfill "
+	headings_flag 1
+	heading_prefix "  \\IndexHeading{"
+		heading_suffix "}\n"
+\end{filecontents*}
+
+
+\documentclass[12pt,twosided,titlepage]{report}
+
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage{cancel}
+\usepackage{imakeidx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{parskip}
+\usepackage{flafter}
+\usepackage{makecell}
+\usepackage{tikz}
+\usepackage{dsfont}
+\usepackage{tcolorbox, xcolor}
+\PassOptionsToPackage{svgnames}{xcolor}
+\tcbuselibrary{theorems}
+\usepackage{fancyhdr}
+\tcbuselibrary{skins,breakable}
+\usetikzlibrary{shadings,shadows}
+\usepackage[Sonny]{fncychap}
+%\usepackage{palatino} % this is the recommended font
+% your other packages go here
+\usepackage{amsmath,epsfig,latexsym,amssymb,amsthm, rotating}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{calligra}
+
+% Define some useful tools for these notes
+% your latex commands go here
+
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm]{geometry}
+
+
+\setlength{\parskip}{0.1in}
+\setlength{\parindent}{0.3in}
+
+\let\drop\smallsetminus
+\let\oldemptyset\emptyset
+\let\bar\overline
+\let\emptyset\varnothing
+
+
+% color
+
+\definecolor{DarkGreen}{HTML}{305f72}
+\definecolor{LightGreen}{HTML}{f1d1b5}
+\definecolor{LimeGreen}{rgb}{0.2, 0.8, 0.2}
+\definecolor{azure}{rgb}{0.8, 1.0, 1.0}
+\definecolor{ocre}{HTML}{F16723}
+\definecolor{DarkOrange}{HTML}{FF8C00}
+
+\definecolor{lemmaback}{HTML}{fcf9ea}
+\definecolor{lemmatop}{HTML}{badfdb}
+
+\definecolor{corback}{HTML}{f1d4d4}
+\definecolor{cortop}{HTML}{484c7f}
+
+\definecolor{thmback}{HTML}{f0f5f9}
+\definecolor{thmtop}{HTML}{52616b}
+
+\definecolor{propback}{HTML}{eeeeee}
+\definecolor{proptop}{HTML}{1089ff}
+
+% http://ctan.org/pkg/listings
+\usepackage{listings}
+\lstset{
+	numbers=left,
+	tabsize=2,
+	basicstyle=\ttfamily,
+	mathescape,
+	commentstyle     = \color{olive},	
+}
+
+% customized index
+\newcommand*{\IndexDotfill}{%
+	\nobreak\dotfill\ \nobreak
+}
+\renewcommand*{\indexspace}{%
+	\par
+	\vspace{25pt plus 6pt minus 4pt}%
+}
+\newcommand*{\IndexHeading}[1]{%
+	\tikz\node[
+	rounded corners=5pt,
+	draw=ocre,
+	fill=ocre!10,
+	line width=1pt,
+	inner sep=5pt,
+	align=center,
+	font=\sffamily\bfseries\large,
+	minimum width=\linewidth-\pgflinewidth,
+	] {#1};%
+	\nopagebreak
+	\par
+	\vspace{2mm}%
+}
+
+% mdframed
+\usepackage{calc}                                          
+\usepackage[backgroundcolor=azure,
+linecolor=red!60!black,
+linewidth=2pt
+]{mdframed}
+
+\mdfsetup{frametitlealignment=\center}
+\usetikzlibrary{decorations.markings}
+\usepackage{float}
+\restylefloat{table}
+
+
+\setlength{\parskip}{0.15in}
+\setlength{\parindent}{0in}
+
+
+% customed chi
+\makeatletter
+\@ifdefinable\@latex@chi{\let\@latex@chi\chi}
+\renewcommand*\chi{{\@latex@chi\smash[t]{\mathstrut}}} % want only bottom half of \mathstrut
+\makeatletter
+
+% marked text
+\tcbset{textmarker/.style={%
+		skin=enhancedmiddle,breakable,parbox=false,
+		boxrule=0mm,leftrule=5mm,rightrule=5mm,boxsep=0mm,arc=0mm,outer arc=0mm,
+		left=3mm,right=3mm,top=1mm,bottom=1mm,enlarge left by=-8mm,enlarge right by=-8mm,
+		toptitle=1mm,bottomtitle=1mm,width=\the\dimexpr\linewidth+1.6cm\relax}}
+
+
+%%%%%%%%%%%%%%%%%%%%% my blocks  %%%%%%%%%%%%%
+\newcounter{mythmctr}
+
+
+
+% defn block, don't need counter here
+\newenvironment{defn}[1]{%
+	\tcolorbox[beamer,%
+	noparskip,breakable,
+	colback=LightGreen,colframe=DarkGreen,%
+	colbacklower=LimeGreen!75!LightGreen,%
+	title={#1}] \index{#1} \label{defn:#1}
+}%
+{\endtcolorbox}
+
+
+
+% theorem
+\newenvironment{thm}[1][]{
+	\refstepcounter{mythmctr}% increment the environment's counter
+	\tcolorbox[beamer,%
+	noparskip,breakable,
+	colback=thmback,colframe=thmtop,%
+	title={\bfseries Theorem \themythmctr{\ifthenelse{\equal{#1}{}}{}{: #1}}}]  \label{thm:\themythmctr}
+}%
+{\endtcolorbox}
+
+% lemma, share theorem counter
+\newenvironment{lemma}[1][]{
+	\refstepcounter{mythmctr}% increment the environment's counter
+	\tcolorbox[beamer,%
+	noparskip,breakable,
+	colback=lemmaback,colframe=lemmatop,%
+	title={\bfseries Lemma \themythmctr{\ifthenelse{\equal{#1}{}}{}{: #1}}}]  \label{thm:\themythmctr}
+}%
+{\endtcolorbox}
+
+% corrolary
+\newenvironment{corr}[1][]{
+	\refstepcounter{mythmctr}% increment the environment's counter
+	\tcolorbox[beamer,%
+	noparskip,breakable,
+	colback=corback,colframe=cortop,%
+	title={\bfseries Corrollary \themythmctr{\ifthenelse{\equal{#1}{}}{}{: #1}}}]  \label{thm:\themythmctr}
+}%
+{\endtcolorbox}
+
+
+\newenvironment{prop}[1][]{
+	\refstepcounter{mythmctr}% increment the environment's counter
+	\tcolorbox[beamer,%
+	noparskip,breakable,
+	colback=propback,colframe=proptop,%
+	title={\bfseries Proposition \themythmctr{\ifthenelse{\equal{#1}{}}{}{: #1}}}]  \label{thm:\themythmctr}
+}%
+{\endtcolorbox}
+
+\numberwithin{mythmctr}{chapter}
+
+
+% equation box: might need for amath courses
+% note that you need equation environment in between
+\newenvironment{eqbox}[1][]{
+	\tcolorbox[textmarker,colback=DarkOrange!5!white,
+	colframe=DarkOrange!75!yellow]
+	\textit{#1}
+}%
+{\endtcolorbox}
+
+
+\newenvironment{pf}{%
+	{\calligra Proof:}
+	\tcolorbox[blanker,breakable,left=5mm,
+	before skip=10pt,after skip=10pt,
+	borderline west={1mm}{0pt}{red}]
+}%
+{\qed \endtcolorbox}
+
+\newenvironment{ex}{%
+	{\calligra Example:}
+	\tcolorbox[blanker,breakable,left=5mm,
+	before skip=10pt,after skip=10pt,
+	borderline west={1mm}{0pt}{blue}]
+}%
+{\endtcolorbox}
+
+\newenvironment{remark}{%
+	{\calligra Remark:}
+	\tcolorbox[blanker,breakable,left=5mm,
+	before skip=10pt,after skip=10pt,
+	borderline west={1mm}{0pt}{pink}]
+}%
+{\endtcolorbox}
+
+
+\newcommand{\defnref}[1]{\hyperref[defn:#1]{#1}}
+\newcommand{\thmref}[1]{Theorem \ref{thm:#1}}
+\newcommand{\lemmaref}[1]{Lemma \ref{thm:#1}}
+\newcommand{\corref}[1]{Corollary \ref{thm:#1}}
+\newcommand{\propref}[1]{Proposition \ref{thm:#1}}
+% make index
+\makeindex
+
+
+
+
+
+% Title Page
+\title{Introduction to Mathematics}
+\author{Sibelius Peng}
+\date{Fall 2019}
+
+
+\begin{document}
+\maketitle
+{
+	\hypersetup{linkbordercolor=white}
+	\tableofcontents
+}
+
+\newpage
+\pagestyle{headings}
+
+
+\chapter{Schubert Calculus}
+\begin{defn}{Schubert calculus}
+In mathematics, Schubert calculus is a branch of algebraic geometry introduced in the nineteenth century by Hermann Schubert, in order to solve various counting problems of projective geometry.
+\end{defn}
+
+\begin{thm}[Pieri's formula]
+Let $\sigma_\lambda$ be a special Schubert cycle and suppose $\sigma_\mu$ is any Schubert cycle with $\mu= \{\mu_1,\ldots,\mu_k\}$. Then we have 
+$$ \sigma_\lambda\cdot \sigma_\mu = \sum \sigma_\nu$$
+where the sum is over all $\nu$ such that $\mu_\ell \leqslant \nu_\ell \leqslant \mu_{\ell-1}$ and $\sum \nu_\ell -\mu_\ell = \lambda$.
+\end{thm}
+
+\begin{pf}
+Simply invoke the duality theorem.
+\end{pf}
+
+\begin{remark}
+\thmref{1.1} is an import theorem\footnote{theorem reference testing.}. Let's look at an example.
+\end{remark}
+
+\begin{ex}
+Click \href{http://www.macs.hw.ac.uk/~simonm/schubertcalculusreview.pdf#page=14}{here} for details.
+\end{ex}
+
+Now let's look at a new theorem!
+
+\begin{thm}
+	For a fixed $k$, as $n\to\infty$, the following asymptotic holds:
+	$$
+	\log \operatorname{edge} ~ G(k,n)= kn \log\left(
+	{\sqrt \pi \Gamma \left({k+1\over 2}\right) \over \Gamma \left({k\over 2}\right)}
+	 \right)- \mathcal O (\log n)
+	$$
+\end{thm}
+
+A general, guiding theme of our work is to compare the number of complex solutions with
+the expected number of real solutions. With this regard, we obtain:
+
+\begin{corr}
+For fixed $k\ge 2$, we have $\operatorname{edge} G(k,n)=\deg G_{\mathbb C} (k,n)^{{1\over 2}\varepsilon_k+o(1)}$ for $n\to\infty$, where $\varepsilon_k$ is monotonically decreasing with $\lim_{k\to\infty}=1$. 
+\end{corr}
+
+\begin{remark}
+This means that for large $n$, the expected degree of the real Grassmannian exceeds the square
+root of the degree of the corresponding complex Grassmannian...
+\end{remark}
+
+\begin{lemma}
+Let $K\subseteq \mathbb R^d$
+be a convex body containing the origin. Then the radial function $_K$
+and the support function $h_K$ of $K$ have the same maximum on $S^{d-1}$
+. Moreover, a direction
+$u\in S^{d-1}$
+is maximizing for $r_K$ if and only u is maximizing for $h_K$.
+\end{lemma}
+
+\begin{pf}
+Let $\overline{r}$ denote the maximum of $r_K$. Then $K\subseteq B(0, \overline r)$ and hence $h_K \le h_{B(0,\overline r)}$, which implies $\max h_K\le \max h_{B(0,\overline r)}= \overline r$. For the other direction let $u\in S^{d-1}$. Then ... The claim about the maximizing directions follows easily by tracing our argument.
+\end{pf}
+
+Now let's look at a proposition.
+
+\begin{prop}
+The set $\operatorname{Sing}(S)$ is semialgebraic and $\dim \operatorname{Sing}(S) < \dim S$. In particular, $S\ne \operatorname{Sing}(S)$.
+\end{prop}
+\begin{remark}
+In the sequel it will be convenient to say that generic points of a semialgebraic set $S$ satisfy
+a certain property if this property is satisfied by all points except in a semialgebraic subset of
+positive codimension in $S$. (For example, in view of the previous proposition, generic points of
+a semialgebraic set $S$ are regular points.)
+\end{remark}
+
+
+\chapter{General Relativity}
+Now let's apply our math knowledge to physics!
+
+Moving from math to physics involves the introduction of dynamical equations which relate
+matter and energy to the curvature of spacetime. In GR, the “equation of motion” for the
+metric is the famous \textbf{Einstein equation}:
+
+\begin{eqbox}[Einstein equation]
+\begin{equation}
+R_{\mu\nu}-{1\over 2} R g_{\mu \nu} = 8\pi GT_{\mu\nu}
+\end{equation}
+\end{eqbox}
+
+\begin{defn}{Kruskal coordinates}
+We can
+demonstrate this by making a transformation to what are known as \textbf{Kruskal coordinates},
+defined by
+\begin{equation}
+\begin{split}
+u &= \left( {r\over 2Gm}-1\right)^{1/2}e^{r/4Gm}\cosh(t/4Gm)\\
+v &= \left( {r\over 2Gm}-1\right)^{1/2}e^{r/4Gm}\sinh(t/4Gm)
+\end{split}
+\end{equation}
+\end{defn}
+
+\begin{remark}
+The useful thing about the Schwarzschild solution is that it describes both mundane
+things like the solar system, and more exotic objects like black holes. To get a feel for it,
+let’s look at how particles move in a Schwarzschild geometry. It turns out that we can cast
+the problem of a particle moving in the plane  $\theta=\pi\over 2$ as a one-dimensional problem for the radial coordinate $r=r(\tau)$.
+\end{remark}
+
+\section{Cosmology}
+Just as we were able to make great strides with the Schwarzschild metric on the assumption
+of sperical symmetry, we can make similar progress in cosmology by assuming that the
+Universe is homogeneous and isotropic. That is to say, we assume the existence of a “rest
+frame for the Universe,” which defines a universal time coordinate, and singles out three-dimensional surfaces perpendicular to this time coordinate. (In the real Universe, this rest
+frame is the one in which galaxies are at rest and the microwave background is isotropic.)
+“Homogeneous” means that the curvature of any two points at a given time t is the same.
+“Isotropic” is trickier, but basically means that the universe looks the same in all directions.
+Thus, the surface of a cylinder is homogeneous (every point is the same) but not isotropic
+(looking along the long axis of the cylinder is a preferred direction); a cone is isotropic around
+its vertex, but not homogeneous.
+
+
+\printindex
+\end{document}

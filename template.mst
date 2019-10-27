@@ -1,0 +1,5 @@
+ delim_0 "\\IndexDotfill "
+ delim_1 "\\IndexDotfill "
+ headings_flag 1
+ heading_prefix "  \\IndexHeading{"
+  heading_suffix "}\n"
